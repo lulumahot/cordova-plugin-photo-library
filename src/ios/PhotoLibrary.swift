@@ -42,6 +42,7 @@ import Foundation
             let includeCloudData = options["includeCloudData"] as! Bool
             let includeVideos = options["includeVideos"] as! Bool
             let includeImages = options["includeImages"] as! Bool
+            let timestamp = options["timestamp"]as! Double
             
             func createResult (library: [NSDictionary], chunkNum: Int, isLastChunk: Bool) -> [String: AnyObject] {
                 let result: NSDictionary = [
@@ -60,7 +61,8 @@ import Foundation
                                                                   includeImages: includeImages,
                                                                   includeAlbumData: includeAlbumData,
                                                                   includeCloudData: includeCloudData,
-                                                                  includeVideos: includeVideos)
+                                                                  includeVideos: includeVideos
+                                                                  timestamp: timestamp)
 
             service.getLibrary(getLibraryOptions,
                 completion: { (library, chunkNum, isLastChunk) in
