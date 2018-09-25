@@ -112,11 +112,6 @@ final class PhotoLibraryService {
                 fetchOptions.includeAssetSourceTypes = [.typeUserLibrary, .typeiTunesSynced]
             }
         }
-      
-        if(options.timestamp > 0){
-          fetchOptions.predicate = NSPredicate(format: "creationDate > %@ && creationDate < %@", NSDate(timeIntervalSince1970: options.timestamp).addingTimeInterval(-30), NSDate(timeIntervalSince1970: options.timestamp).addingTimeInterval(30));
-          fetchOptions.fetchLimit = 5;
-        }
         
         // let fetchResult = PHAsset.fetchAssets(with: .image, options: self.fetchOptions)
         if(options.includeImages == true && options.includeVideos == true) {
@@ -174,27 +169,31 @@ final class PhotoLibraryService {
         var chunkStartTime = NSDate()
         var chunkNum = 0
 
-        fetchResult.enumerateObjects({ (asset: PHAsset, index, stop) in
+        if(fetchResult.count > 0){
+          fetchResult.enumerateObjects({ (asset: PHAsset, index, stop) in
 
-            let libraryItem = self.assetToLibraryItem(asset: asset, useOriginalFileNames: options.useOriginalFileNames, includeAlbumData: options.includeAlbumData)
+              let libraryItem = self.assetToLibraryItem(asset: asset, useOriginalFileNames: options.useOriginalFileNames, includeAlbumData: options.includeAlbumData)
 
-            chunk.append(libraryItem)
-            
-            self.getCompleteInfo(libraryItem, completion: { (fullPath) in
-                
-                libraryItem["filePath"] = fullPath
-            
-                if index == fetchResult.count - 1 { // Last item
-                    completion(chunk, chunkNum, true)
-                } else if (options.itemsInChunk > 0 && chunk.count == options.itemsInChunk) ||
-                    (options.chunkTimeSec > 0 && abs(chunkStartTime.timeIntervalSinceNow) >= options.chunkTimeSec) {
-                    completion(chunk, chunkNum, false)
-                    chunkNum += 1
-                    chunk = [NSDictionary]()
-                    chunkStartTime = NSDate()
-                }
-            })
-        })
+              chunk.append(libraryItem)
+
+              self.getCompleteInfo(libraryItem, completion: { (fullPath) in
+
+                  libraryItem["filePath"] = fullPath
+
+                  if index == fetchResult.count - 1 { // Last item
+                      completion(chunk, chunkNum, true)
+                  } else if (options.itemsInChunk > 0 && chunk.count == options.itemsInChunk) ||
+                      (options.chunkTimeSec > 0 && abs(chunkStartTime.timeIntervalSinceNow) >= options.chunkTimeSec) {
+                      completion(chunk, chunkNum, false)
+                      chunkNum += 1
+                      chunk = [NSDictionary]()
+                      chunkStartTime = NSDate()
+                  }
+              })
+          })
+        }else{
+          completion(chunk, chunkNum, true);
+        }
     }
     
     
