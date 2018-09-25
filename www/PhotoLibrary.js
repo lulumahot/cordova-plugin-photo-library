@@ -339,27 +339,30 @@ var addUrlsToLibrary = function (library, callback, options) {
 
   var urlsLeft = library.length;
 
-  var handlePhotoURL = function (libraryItem, photoURL) {
-    libraryItem.photoURL = photoURL;
-    urlsLeft -= 1;
-    if (urlsLeft <= 0) {
-      callback(library);
+  if(urlsLeft == 0){
+    callback(library); 
+  }else{
+    var handlePhotoURL = function (libraryItem, photoURL) {
+      libraryItem.photoURL = photoURL;
+      urlsLeft -= 1;
+      if (urlsLeft <= 0) {
+        callback(library);
+      }
+    };
+
+    var handleThumbnailURL = function (libraryItem, thumbnailURL) {
+      libraryItem.thumbnailURL = thumbnailURL;
+      photoLibrary.getPhotoURL(libraryItem, handlePhotoURL.bind(null, libraryItem), handleUrlError);
+    };
+
+    var handleUrlError = function () {}; // Should never happen
+
+    var i;
+    for (i = 0; i < library.length; i++) {
+      var libraryItem = library[i];
+      photoLibrary.getThumbnailURL(libraryItem, handleThumbnailURL.bind(null, libraryItem), handleUrlError, options);
     }
-  };
-
-  var handleThumbnailURL = function (libraryItem, thumbnailURL) {
-    libraryItem.thumbnailURL = thumbnailURL;
-    photoLibrary.getPhotoURL(libraryItem, handlePhotoURL.bind(null, libraryItem), handleUrlError);
-  };
-
-  var handleUrlError = function () {}; // Should never happen
-
-  var i;
-  for (i = 0; i < library.length; i++) {
-    var libraryItem = library[i];
-    photoLibrary.getThumbnailURL(libraryItem, handleThumbnailURL.bind(null, libraryItem), handleUrlError, options);
   }
-
 };
 
 var dataAndMimeTypeToBlob = function (data, mimeType) {
