@@ -120,18 +120,36 @@ final class PhotoLibraryService {
         
         // let fetchResult = PHAsset.fetchAssets(with: .image, options: self.fetchOptions)
         if(options.includeImages == true && options.includeVideos == true) {
-            fetchOptions.predicate = NSPredicate(format: "mediaType == %d || mediaType == %d",
+            if(options.timestamp > 0){
+                fetchOptions.predicate = NSPredicate(format: "creationDate > %@ && creationDate < %@ && (mediaType == %d || mediaType == %d)", NSDate(timeIntervalSince1970: options.timestamp/1000).addingTimeInterval(-30), NSDate(timeIntervalSince1970: options.timestamp/1000).addingTimeInterval(30), PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue);
+                fetchOptions.fetchLimit = 5;
+            }else{
+                fetchOptions.predicate = NSPredicate(format: "mediaType == %d || mediaType == %d",
                                                  PHAssetMediaType.image.rawValue,
                                                  PHAssetMediaType.video.rawValue)
+            }
         }
         else {
             if(options.includeImages == true) {
-                fetchOptions.predicate = NSPredicate(format: "mediaType == %d",
+                if(options.timestamp > 0){
+                    fetchOptions.predicate = NSPredicate(format: "creationDate > %@ && creationDate < %@ && (mediaType == %d)", NSDate(timeIntervalSince1970: options.timestamp/1000).addingTimeInterval(-30), NSDate(timeIntervalSince1970: options.timestamp/1000).addingTimeInterval(30), PHAssetMediaType.image.rawValue);
+                    fetchOptions.fetchLimit = 5;
+                }else{
+                    fetchOptions.predicate = NSPredicate(format: "mediaType == %d",
                                                      PHAssetMediaType.image.rawValue)
+                }
             }
             else if(options.includeVideos == true) {
-                fetchOptions.predicate = NSPredicate(format: "mediaType == %d",
+                if(options.timestamp > 0){
+                    fetchOptions.predicate = NSPredicate(format: "creationDate > %@ && creationDate < %@ && (mediaType == %d)", NSDate(timeIntervalSince1970: options.timestamp/1000).addingTimeInterval(-30), NSDate(timeIntervalSince1970: options.timestamp/1000).addingTimeInterval(30), PHAssetMediaType.video.rawValue);
+                    fetchOptions.fetchLimit = 5;
+                }else{
+                    fetchOptions.predicate = NSPredicate(format: "mediaType == %d",
                                                      PHAssetMediaType.video.rawValue)
+                }
+            }else if(options.timestamp > 0){
+                fetchOptions.predicate = NSPredicate(format: "creationDate > %@ && creationDate < %@", NSDate(timeIntervalSince1970: options.timestamp/1000).addingTimeInterval(-30), NSDate(timeIntervalSince1970: options.timestamp/1000).addingTimeInterval(30));
+                fetchOptions.fetchLimit = 5;
             }
         }
         
