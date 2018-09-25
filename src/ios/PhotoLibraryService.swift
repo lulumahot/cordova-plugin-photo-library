@@ -114,7 +114,7 @@ final class PhotoLibraryService {
         }
       
         if(options.timestamp > 0){
-          fetchOptions.predicate = NSPredicate(format: @"creationDate > %@ && creationDate < %@", NSDate(timeIntervalSince1970: timestamp).addingTimeInterval(-30), NSDate(timeIntervalSince1970: timestamp).addingTimeInterval(30));
+          fetchOptions.predicate = NSPredicate(format: "creationDate > %@ && creationDate < %@", NSDate(timeIntervalSince1970: options.timestamp).addingTimeInterval(-30), NSDate(timeIntervalSince1970: options.timestamp).addingTimeInterval(30));
           fetchOptions.fetchLimit = 5;
         }
         
