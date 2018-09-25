@@ -342,7 +342,7 @@ var addUrlsToLibrary = function (library, callback, options) {
   var handlePhotoURL = function (libraryItem, photoURL) {
     libraryItem.photoURL = photoURL;
     urlsLeft -= 1;
-    if (urlsLeft === 0) {
+    if (urlsLeft <= 0) {
       callback(library);
     }
   };
