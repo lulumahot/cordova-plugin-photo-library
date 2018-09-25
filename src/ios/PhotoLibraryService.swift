@@ -112,6 +112,11 @@ final class PhotoLibraryService {
                 fetchOptions.includeAssetSourceTypes = [.typeUserLibrary, .typeiTunesSynced]
             }
         }
+      
+        if(options.timestamp){
+          fetchOptions.predicate = [NSPredicate predicateWithFormat:@"creationDate > %@ && creationDate < %@", [[NSDate dateWithTimeIntervalSince1970:timestamp] dateByAddingTimeInterval: - 30], [[NSDate dateWithTimeIntervalSince1970:timestamp] dateByAddingTimeInterval: + 30]];
+          fetchOptions.fetchLimit = 5;
+        }
         
         // let fetchResult = PHAsset.fetchAssets(with: .image, options: self.fetchOptions)
         if(options.includeImages == true && options.includeVideos == true) {
