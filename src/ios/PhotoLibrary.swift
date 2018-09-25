@@ -61,7 +61,7 @@ import Foundation
                                                                   includeImages: includeImages,
                                                                   includeAlbumData: includeAlbumData,
                                                                   includeCloudData: includeCloudData,
-                                                                  includeVideos: includeVideos
+                                                                  includeVideos: includeVideos,
                                                                   timestamp: timestamp)
 
             service.getLibrary(getLibraryOptions,
