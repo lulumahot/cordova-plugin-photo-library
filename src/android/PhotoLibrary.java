@@ -62,13 +62,14 @@ public class PhotoLibrary extends CordovaPlugin {
               final int itemsInChunk = options.getInt("itemsInChunk");
               final double chunkTimeSec = options.getDouble("chunkTimeSec");
               final boolean includeAlbumData = options.getBoolean("includeAlbumData");
+              final long timestamp = options.has("timestamp") ? options.getLong("timestamp") : 0;
 
               if (!cordova.hasPermission(READ_EXTERNAL_STORAGE)) {
                 callbackContext.error(service.PERMISSION_ERROR);
                 return;
               }
 
-              PhotoLibraryGetLibraryOptions getLibraryOptions = new PhotoLibraryGetLibraryOptions(itemsInChunk, chunkTimeSec, includeAlbumData);
+              PhotoLibraryGetLibraryOptions getLibraryOptions = new PhotoLibraryGetLibraryOptions(itemsInChunk, chunkTimeSec, includeAlbumData, timestamp);
 
               service.getLibrary(getContext(), getLibraryOptions, new PhotoLibraryService.ChunkResultRunnable() {
                 @Override
